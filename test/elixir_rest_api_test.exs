@@ -6,8 +6,6 @@ defmodule ElixirRestApiTest do
 
   test "returns hello world" do
     conn = conn(:get, "/hello")
-
-    # Invoke the plug
     conn = ElixirRestApi.Router.call(conn, [])
 
     # Assert the response and status
@@ -15,4 +13,15 @@ defmodule ElixirRestApiTest do
     assert conn.status == 200
     assert conn.resp_body == "world"
   end 
+
+  test "returns bar from post foo" do
+    conn = conn(:post, "/foo", "{\"baz\": 1}",  headers: [{"content-type", "application/json"}])
+    conn = ElixirRestApi.Router.call(conn, [])
+
+    assert conn.state == :sent
+    assert conn.status == 200
+    assert conn.resp_body == "bar"
+
+  end
+  
 end
