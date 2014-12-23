@@ -1,0 +1,36 @@
+FROM bradleyd/ubuntu-sensu-base
+
+MAINTAINER Bradley Smith
+
+# Sensu server
+ADD http://10.132.150.200:4567/sensu_config/v1?auth_token=<%= auth_token %>&auth_password=<%= auth_password %> /etc/sensu/config.json
+RUN chown sensu:sensu /etc/sensu/config.json
+
+# uchiwa
+ADD http://10.132.150.200:4567/uchiwa_json /etc/sensu/uchiwa.json
+RUN chown uchiwa:sensu /etc/sensu/uchiwa.json
+
+RUN git clone git@bitbucket.org:wameku/wameku-handlers.git /etc/sensu/wameku-handlers
+RUN chown sensu:sensu /etc/sensu/wameku-handlers
+RUN cp /etc/sensu/wameku-handlers/*.rb /etc/sensu/handlers/
+RUN chown sensu:sensu /etc/sensu/handlers
+RUN cp /etc/sensu/wameku-handlers/*_handler.json /etc/sensu/conf.d/
+RUN chown -R sensu:sensu /etc/sensu/conf.d/
+
+
+# config consumer
+RUN mkdir /opt/config_consumer
+RUN chmod -R 777 /opt/config_consumer
+RUN git clone git@bitbucket.org:wameku/config_consumer.git /opt/config_consumer
+RUN cp /opt/config_consumer/vendor/init_scripts/centos_init.sh /etc/init.d/config_consumer
+RUN chmod 755 /etc/init.d/config_consumer
+RUN cd /opt/config_consumer/; bundle
+ADD http://10.132.150.200:4567/config_consumer?account_uuid=<%= @account_uuid %> /opt/config_consumer/config/account.yml
+ADD http://10.132.150.200:4567/config_consumer/amqp?vhost=<%= auth_token %>&auth_token=<%= auth_token %>&auth_password=<%= auth_password %> /opt/config_consumer/config/amqp.yml
+
+# supervisord
+ADD http://10.132.150.200:4567/supervisord_conf /etc/supervisor/conf.d/supervisord.conf
+
+EXPOSE 22 3000 4567
+
+CMD ["/usr/bin/supervisord"]

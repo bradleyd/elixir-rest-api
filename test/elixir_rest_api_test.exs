@@ -20,7 +20,7 @@ defmodule ElixirRestApiTest do
 
     assert conn.state == :sent
     assert conn.status == 200
-    assert conn.resp_body == "bar"
+    assert conn.resp_body == "{\"baz\": 1}"
 
   end
   

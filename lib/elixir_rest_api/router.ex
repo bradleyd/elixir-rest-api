@@ -1,5 +1,6 @@
 defmodule ElixirRestApi.Router do
   import Plug.Conn
+  import ElixirRestApi.Parse
   use Plug.Router
 
   plug :match
@@ -14,10 +15,10 @@ defmodule ElixirRestApi.Router do
   end
 
   post "/foo" do
-    {:ok, body, conn} = read_body(conn)
-    data = Poison.decode!(body)
+    {:ok, body, conn} = conn |> read_body
+    data = ElixirRestApi.Parse.parse(body)
     IO.inspect data
-    send_resp(conn, 200, "bar")
+    send_resp(conn, 200, body)
   end
 
   match _ do
