@@ -1,6 +1,7 @@
 defmodule ElixirRestApi.Router do
   import Plug.Conn
   import ElixirRestApi.Parse
+  import ElixirRestApi.Template
   use Plug.Router
 
   plug :match
@@ -18,7 +19,13 @@ defmodule ElixirRestApi.Router do
     {:ok, body, conn} = conn |> read_body
     data = ElixirRestApi.Parse.parse(body)
     IO.inspect data
-    send_resp(conn, 200, body)
+    case ElixirRestApi.Template.bind(data) do
+      {:ok, str} ->
+        {:ok, resp} = Poison.encode(%{ status: "success"})
+        send_resp(conn, 200, resp)
+      {:err, msg} ->
+        send_resp(conn, 401, msg)
+    end
   end
 
   match _ do

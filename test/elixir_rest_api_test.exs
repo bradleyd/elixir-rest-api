@@ -15,12 +15,13 @@ defmodule ElixirRestApiTest do
   end 
 
   test "returns bar from post foo" do
-    conn = conn(:post, "/foo", "{\"baz\": 1}",  headers: [{"content-type", "application/json"}])
+    params = "{\"auth_token\":1, \"auth_password\":\"secret\", \"account_uuid\":\"1234-56789\"}"
+    conn = conn(:post, "/foo", params,  headers: [{"content-type", "application/json"}])
     conn = ElixirRestApi.Router.call(conn, [])
 
     assert conn.state == :sent
     assert conn.status == 200
-    assert conn.resp_body == "{\"baz\": 1}"
+    assert conn.resp_body == "{\"status\":\"success\"}"
 
   end
   

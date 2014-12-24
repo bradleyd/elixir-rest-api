@@ -7,7 +7,7 @@ defmodule ElixirRestApiTemplateTest do
 
   ## need to have better test
   test "bind returns template" do
-    assert is_binary(ElixirRestApi.Template.bind(%{ auth_password: "secret", auth_token: "12345", account_uuid: "123-456-789"}))
+    assert {:ok, _} = ElixirRestApi.Template.bind(%{ auth_password: "secret", auth_token: "12345", account_uuid: "123-456-789"})
   end
   
   

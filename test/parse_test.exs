@@ -4,7 +4,7 @@ defmodule ElixirRestApiParseTest do
   test "parse" do
     
     data = "{\"bar\": 1}"
-    assert %{ "bar" => 1 } == ElixirRestApi.Parse.parse(data)
+    assert %{ :bar => 1 } == ElixirRestApi.Parse.parse(data)
   end
   
 end
