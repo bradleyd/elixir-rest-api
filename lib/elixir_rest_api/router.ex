@@ -2,6 +2,7 @@ defmodule ElixirRestApi.Router do
   import Plug.Conn
   import ElixirRestApi.Parse
   import ElixirRestApi.Template
+  import ElixirRestApi.Utils
   use Plug.Router
 
   plug :match
@@ -21,6 +22,15 @@ defmodule ElixirRestApi.Router do
     IO.inspect data
     case ElixirRestApi.Template.bind(data) do
       {:ok, str} ->
+        :ok = ElixirRestApi.Utils.tar(data[:auth_token], str) #create tar from template
+        ##XXX this could all be in a separate process (Task or Spawn)
+        #for each docker host set the docker_url
+        #and then build image from dockerfile template
+        #:docker_image.build(TarBin, Args)
+        #After build gets image id and then 
+        #:docker_container.create(image_id)
+        # Then start container
+        #:docker_container.start(container_id, ports)
         {:ok, resp} = Poison.encode(%{ status: "success"})
         send_resp(conn, 200, resp)
       {:err, msg} ->
