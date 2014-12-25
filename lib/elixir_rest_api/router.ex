@@ -20,8 +20,11 @@ defmodule ElixirRestApi.Router do
     {:ok, body, conn} = conn |> read_body
     data = ElixirRestApi.Parse.parse(body)
     IO.inspect data
+    #probably should put this in gen sever
     case ElixirRestApi.Template.bind(data) do
       {:ok, str} ->
+        # {:ok, pid} = ElixirRestApi.Worker.start(%{template: str, data: data})
+        # ElixirRestApi.Worker.run(pid)
         :ok = ElixirRestApi.Utils.tar(data[:auth_token], str) #create tar from template
         ##XXX this could all be in a separate process (Task or Spawn)
         #for each docker host set the docker_url
