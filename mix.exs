@@ -12,7 +12,7 @@ defmodule ElixirRestApi.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:logger, :cowboy, :plug]]
+    [applications: [:logger, :cowboy, :plug, :erldocker]]
   end
 
   # Dependencies can be Hex packages:
@@ -27,7 +27,8 @@ defmodule ElixirRestApi.Mixfile do
   defp deps do
     [{:cowboy, "~> 1.0.0"},
      {:plug, "~> 0.9.0"},
-     {:poison, "~> 1.0"}
+     {:poison, "~> 1.0"},
+     {:erldocker, github: "tsloughter/erldocker"}
     ]
   end
 end

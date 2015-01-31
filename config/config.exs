@@ -22,3 +22,5 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env}.exs"
+config :erldocker,
+  docker_http: "http://docker0001.wameku.com:14443"
